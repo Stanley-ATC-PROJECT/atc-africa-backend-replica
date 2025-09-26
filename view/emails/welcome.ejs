@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to ATC Africa</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #1f1f1f;
+        background-color: #f6f7f9;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #e6e7eb;
+      }
+
+      .header {
+        background-color: #4b0082;
+        padding: 32px 28px;
+        text-align: center;
+        color: #ffffff;
+        border-bottom: 1px solid #3e006e;
+      }
+
+      .header h1 {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+
+      .header p {
+        font-size: 14px;
+        opacity: 0.9;
+        font-weight: 400;
+      }
+
+      .content {
+        padding: 28px;
+      }
+
+      .welcome-message {
+        margin-bottom: 30px;
+      }
+
+      .welcome-message h2 {
+        color: #1f1f1f;
+        font-size: 18px;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+
+      .welcome-message p {
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 12px;
+      }
+
+      .features {
+        background-color: #f7f8fc;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        border-left: 4px solid #4b0082;
+      }
+
+      .features h3 {
+        color: #1f1f1f;
+        font-size: 16px;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .feature-list {
+        list-style: none;
+      }
+
+      .feature-list li {
+        padding: 6px 0;
+        color: #333;
+        position: relative;
+        padding-left: 20px;
+      }
+
+      .feature-list li:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 10px;
+        width: 6px;
+        height: 6px;
+        background-color: #4b0082;
+        border-radius: 50%;
+      }
+
+      .cta-button {
+        display: inline-block;
+        background-color: #4b0082;
+        color: #ffffff !important;
+        text-decoration: none;
+        padding: 12px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        margin: 16px 0;
+      }
+
+      .cta-button:hover {
+        background-color: #3e006e;
+      }
+
+      .footer {
+        background-color: #fafbfc;
+        padding: 24px 28px;
+        text-align: center;
+        border-top: 1px solid #eceef2;
+      }
+
+      .footer p {
+        color: #566074;
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+
+      .social-links {
+        margin-top: 20px;
+      }
+
+      .social-links a {
+        display: inline-block;
+        margin: 0 8px;
+        color: #4b0082;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .social-links a:hover {
+        color: #3e006e;
+      }
+
+      .highlight {
+        color: #4b0082;
+        font-weight: 700;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          margin: 10px;
+          border-radius: 8px;
+        }
+
+        .header,
+        .content,
+        .footer {
+          padding: 20px;
+        }
+
+        .header h1 {
+          font-size: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Welcome to ATC Africa</h1>
+        <p>Your gateway to Africa's tech community</p>
+      </div>
+
+      <div class="content">
+        <div class="welcome-message">
+          <h2>
+            Hello
+            <span class="highlight"><%= firstName %> <%= lastName %></span>!
+          </h2>
+          <p>
+            Welcome to the African Tech Community (ATC Africa) - where
+            innovation meets opportunity! We're thrilled to have you join our
+            growing network of tech enthusiasts, entrepreneurs, and innovators
+            across Africa.
+          </p>
+          <p>
+            Your account has been successfully created and you're now part of a
+            community that's shaping the future of technology in Africa.
+          </p>
+        </div>
+
+        <div class="features">
+          <h3>🚀 What you can do with your ATC Africa account:</h3>
+          <ul class="feature-list">
+            <li>Discover and attend amazing tech events across Africa</li>
+            <li>Connect with fellow tech professionals and entrepreneurs</li>
+            <li>Submit and manage your own tech events</li>
+            <li>Apply to become a speaker at events</li>
+            <li>Explore sponsorship opportunities</li>
+            <li>Stay updated with the latest tech trends and news</li>
+            <li>Access exclusive resources and networking opportunities</li>
+          </ul>
+        </div>
+
+        <div style="text-align: center">
+          <a href="<%= websiteUrl %>" class="cta-button">Explore ATC Africa</a>
+        </div>
+
+        <p
+          style="
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+            margin-top: 20px;
+          "
+        >
+          Ready to dive in? Visit our platform to start exploring events and
+          connecting with the community!
+        </p>
+      </div>
+
+      <div class="footer">
+        <p><strong><%= companyName %></strong></p>
+        <p>Connecting Africa's Tech Community</p>
+        <p>📍 <a href="<%= websiteUrl %>"><%= websiteUrl %></a></p>
+        <p>📧 <a href="mailto:<%= companyEmail %>"><%= companyEmail %></a></p>
+
+        <div class="social-links">
+          <a href="#">Twitter</a> | <a href="#">LinkedIn</a> |
+          <a href="#">Facebook</a> |
+          <a href="#">Instagram</a>
+        </div>
+
+        <p style="margin-top: 20px; font-size: 12px; color: #adb5bd">
+          © <%= currentYear %> <%= companyName %>. All rights reserved.<br />
+          This email was sent to <%= email %>. If you have any questions, please
+          contact us at <%= supportEmail %>.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

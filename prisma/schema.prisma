@@ -1,0 +1,219 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum EventCategory {
+  hqtz
+  state
+  campus
+}
+
+enum EventStatus {
+  draft
+  pending_approval
+  approved
+  rejected
+}
+
+enum UserRole {
+  admin
+  community_manager
+  organizer
+}
+
+model User {
+  id                String   @id @default(cuid())
+  email             String   @unique
+  firstName         String
+  lastName          String
+  password_hash     String
+  role              UserRole @default(organizer)
+  user_metadata     Json?
+  is_active         Boolean  @default(true)
+  hasChangePassword Boolean  @default(false)
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  notificationEmail String //the email user must receive email (not the typical email)
+  bio               String?
+  organization      String?
+  phone_number      String?
+
+  // Password reset moved to dedicated table
+  is_initial_password Boolean @default(false) // Flag for admin-created accounts
+  managerId           String?
+
+  // Relations
+  organized_events Event[]              @relation("EventOrganizer")
+  manager          User?                @relation("ManagerOf", fields: [managerId], references: [id])
+  manager_of       User[]               @relation("ManagerOf")
+  reset_tokens     PasswordResetToken[]
+
+  @@map("users")
+}
+
+model Speaker {
+  id            String   @id @default(cuid())
+  firstName     String
+  lastName      String
+  position      String
+  bio           String?
+  social_link   String?
+  profile_image String?
+  email         String?
+  phone         String?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  // Relations
+  events EventSpeaker[]
+
+  @@map("speakers")
+}
+
+model Sponsor {
+  id          String   @id @default(cuid())
+  name        String
+  logo_url    String?
+  website_url String?
+  description String?
+  tier        String? // e.g., "Gold", "Silver", "Bronze", "Platinum"
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  featured Boolean        @default(false)
+  // Relations
+  events   EventSponsor[]
+
+  @@map("sponsors")
+}
+
+model Event {
+  id                 String        @id @default(cuid())
+  title              String
+  flyer_image        String?
+  description        String
+  event_date         DateTime
+  start_time         DateTime
+  end_time           DateTime
+  category           EventCategory @default(hqtz)
+  status             EventStatus   @default(draft)
+  is_featured        Boolean       @default(false)
+  approved_by        String?
+  approval_date      DateTime?
+  about              String
+  registration_link  String
+  event_website_link String
+  organizer_id       String
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Relations
+  organizer             User                  @relation("EventOrganizer", fields: [organizer_id], references: [id])
+  event_highlight       EventHighlight?
+  speakers              EventSpeaker[]
+  sponsors              EventSponsor[]
+  social_media_mentions SocialMediaMentions[]
+
+  @@map("events")
+}
+
+// Junction table for Event-Speaker many-to-many relationship
+model EventSpeaker {
+  id         String   @id @default(cuid())
+  event_id   String
+  speaker_id String
+  is_keynote Boolean  @default(false)
+  order      Int? // For ordering speakers in the event
+  created_at DateTime @default(now())
+
+  // Relations
+  event   Event   @relation(fields: [event_id], references: [id], onDelete: Cascade)
+  speaker Speaker @relation(fields: [speaker_id], references: [id], onDelete: Cascade)
+
+  @@unique([event_id, speaker_id])
+  @@map("event_speakers")
+}
+
+// Junction table for Event-Sponsor many-to-many relationship
+model EventSponsor {
+  id         String   @id @default(cuid())
+  event_id   String
+  sponsor_id String
+  tier       String? // Override sponsor tier for this specific event
+  order      Int? // For ordering sponsors in the event
+  created_at DateTime @default(now())
+
+  // Relations
+  event   Event   @relation(fields: [event_id], references: [id], onDelete: Cascade)
+  sponsor Sponsor @relation(fields: [sponsor_id], references: [id], onDelete: Cascade)
+
+  @@unique([event_id, sponsor_id])
+  @@map("event_sponsors")
+}
+
+// post event details 
+model EventHighlight {
+  event_id     String   @id @unique
+  // highlights   Json[] // {title: string, type: "video"| "image", url: string}
+  attendance   Int
+  ticket_sales Int
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  // Relations
+  highlight_gallery EventHighlightGallery[] @relation("EventHighlightGallery")
+  event             Event                   @relation(fields: [event_id], references: [id], onDelete: Cascade)
+
+  @@map("event_highlights")
+}
+
+model EventHighlightGallery {
+  id             String           @id @default(cuid())
+  type           String // "image" | "video"
+  event_id       String
+  url            String
+  caption        String?
+  featured       Boolean          @default(false) //should be show on the landing page
+  order          Int? // For ordering images in the gallery
+  created_at     DateTime         @default(now())
+  EventHighlight EventHighlight[] @relation("EventHighlightGallery")
+
+  @@map("event_highlight_gallery")
+}
+
+model SocialMediaMentions {
+  id         String   @id @default(cuid())
+  username   String
+  text       String
+  platform   String
+  avatar     String?
+  link       String
+  event_id   String
+  created_at DateTime @default(now())
+
+  event Event @relation(fields: [event_id], references: [id], onDelete: Cascade)
+
+  @@map("social_media_mentions")
+}
+
+// Dedicated table for password reset tokens
+model PasswordResetToken {
+  id         String   @id @default(cuid())
+  userId     String
+  token      String   @unique
+  expiresAt  DateTime
+  created_at DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}

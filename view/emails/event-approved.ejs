@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Event Approved - ATC Africa</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #1f1f1f;
+        background-color: #f6f7f9;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #e6e7eb;
+      }
+
+      .header {
+        background-color: #4b0082;
+        padding: 32px 28px;
+        text-align: center;
+        color: #ffffff;
+        border-bottom: 1px solid #3e006e;
+      }
+
+      .header h1 {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+
+      .header p {
+        font-size: 14px;
+        opacity: 0.9;
+        font-weight: 400;
+      }
+
+      .content {
+        padding: 28px;
+      }
+
+      .success-message {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .success-icon {
+        display: none;
+      }
+
+      .success-message h2 {
+        color: #1f1f1f;
+        font-size: 18px;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+
+      .event-details {
+        background-color: #f7f8fc;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        border-left: 4px solid #4b0082;
+      }
+
+      .event-details h3 {
+        color: #1f1f1f;
+        font-size: 16px;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .event-info {
+        display: grid;
+        gap: 10px;
+      }
+
+      .event-info-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+      }
+
+      .event-info-item strong {
+        color: #4b0082;
+        min-width: 120px;
+        font-weight: 600;
+      }
+
+      .event-info-item span {
+        color: #333;
+      }
+
+      .cta-button {
+        display: inline-block;
+        background-color: #4b0082;
+        color: #ffffff !important;
+        text-decoration: none;
+        padding: 12px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        margin: 16px 0;
+      }
+
+      .cta-button:hover {
+        background-color: #3e006e;
+      }
+
+      .next-steps {
+        background-color: #f2fbf4;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 20px 0;
+        border-left: 4px solid #1e8e3e;
+      }
+
+      .next-steps h3 {
+        color: #1e8e3e;
+        font-size: 16px;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .next-steps ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .next-steps li {
+        padding: 5px 0;
+        color: #333;
+        position: relative;
+        padding-left: 18px;
+      }
+
+      .next-steps li:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 11px;
+        width: 6px;
+        height: 6px;
+        background-color: #1e8e3e;
+        border-radius: 50%;
+      }
+
+      .footer {
+        background-color: #fafbfc;
+        padding: 24px 28px;
+        text-align: center;
+        border-top: 1px solid #eceef2;
+      }
+
+      .footer p {
+        color: #566074;
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+
+      .highlight {
+        color: #4b0082;
+        font-weight: 700;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          margin: 10px;
+          border-radius: 8px;
+        }
+
+        .header,
+        .content,
+        .footer {
+          padding: 20px;
+        }
+
+        .header h1 {
+          font-size: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Event Approved</h1>
+        <p>Your event is now live on ATC Africa</p>
+      </div>
+
+      <div class="content">
+        <div class="success-message">
+          <div class="success-icon"></div>
+          <h2>Congratulations!</h2>
+          <p>
+            Your event "<span class="highlight"><%= eventTitle %></span>" has
+            been approved and is now live on the ATC Africa platform!
+          </p>
+        </div>
+
+        <div class="event-details">
+          <h3>Event Details</h3>
+          <div class="event-info">
+            <div class="event-info-item">
+              <strong>Event Title:</strong>
+              <span><%= eventTitle %></span>
+            </div>
+            <div class="event-info-item">
+              <strong>Date:</strong>
+              <span><%= eventDate %></span>
+            </div>
+            <div class="event-info-item">
+              <strong>Time:</strong>
+              <span><%= startTime %> - <%= endTime %></span>
+            </div>
+            <div class="event-info-item">
+              <strong>Category:</strong>
+              <span><%= category %></span>
+            </div>
+            <div class="event-info-item">
+              <strong>Status:</strong>
+              <span style="color: #28a745; font-weight: 600">✅ Approved</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="next-steps">
+          <h3>🚀 Next Steps</h3>
+          <ul>
+            <li>Your event is now visible to all ATC Africa members</li>
+            <li>Start promoting your event through our platform</li>
+            <li>Monitor registrations and engagement</li>
+            <li>Consider adding speakers or sponsors to enhance your event</li>
+            <li>Update event details if needed through your dashboard</li>
+          </ul>
+        </div>
+
+        <div style="text-align: center">
+          <a href="<%= websiteUrl %>/events/<%= eventId %>" class="cta-button"
+            >View Your Event</a
+          >
+        </div>
+
+        <p
+          style="
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+            margin-top: 20px;
+          "
+        >
+          Need help managing your event? Contact our support team for
+          assistance.
+        </p>
+      </div>
+
+      <div class="footer">
+        <p><strong><%= companyName %></strong></p>
+        <p>Connecting Africa's Tech Community</p>
+        <p>📍 <a href="<%= websiteUrl %>"><%= websiteUrl %></a></p>
+        <p>📧 <a href="mailto:<%= companyEmail %>"><%= companyEmail %></a></p>
+
+        <p style="margin-top: 20px; font-size: 12px; color: #adb5bd">
+          © <%= currentYear %> <%= companyName %>. All rights reserved.<br />
+          This email was sent to <%= email %>. If you have any questions, please
+          contact us at <%= supportEmail %>.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

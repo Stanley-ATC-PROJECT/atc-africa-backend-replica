@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Event Reminder - ATC Africa</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #1f1f1f;
+        background-color: #f6f7f9;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #e6e7eb;
+      }
+
+      .header {
+        background-color: #4b0082;
+        padding: 32px 28px;
+        text-align: center;
+        color: #ffffff;
+        border-bottom: 1px solid #3e006e;
+      }
+
+      .header h1 {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+
+      .header p {
+        font-size: 14px;
+        opacity: 0.9;
+        font-weight: 400;
+      }
+
+      .content {
+        padding: 28px;
+      }
+
+      .reminder-message {
+        margin-bottom: 30px;
+      }
+
+      .reminder-message h2 {
+        color: #1f1f1f;
+        font-size: 18px;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+
+      .reminder-message p {
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 12px;
+      }
+
+      .event-highlight {
+        background-color: #fff8e5;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 20px 0;
+        border-left: 4px solid #b68b00;
+        text-align: center;
+      }
+
+      .event-highlight h3 {
+        color: #6a4e00;
+        font-size: 16px;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .event-highlight p {
+        color: #6a4e00;
+        font-size: 14px;
+        margin: 0;
+        font-weight: 500;
+      }
+
+      .event-details {
+        background-color: #f7f8fc;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        border-left: 4px solid #4b0082;
+      }
+
+      .event-details h3 {
+        color: #1f1f1f;
+        font-size: 16px;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .event-info {
+        display: grid;
+        gap: 10px;
+      }
+
+      .event-info-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+      }
+
+      .event-info-item strong {
+        color: #4b0082;
+        min-width: 120px;
+        font-weight: 600;
+      }
+
+      .event-info-item span {
+        color: #333;
+      }
+
+      .event-description {
+        background-color: #f6f7f9;
+        border-radius: 8px;
+        padding: 14px;
+        margin: 16px 0;
+        border-left: 4px solid #a0a6b3;
+      }
+
+      .event-description h4 {
+        color: #566074;
+        font-size: 14px;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .event-description p {
+        color: #333;
+        font-size: 13px;
+        margin: 0;
+      }
+
+      .cta-button {
+        display: inline-block;
+        background-color: #4b0082;
+        color: #ffffff !important;
+        text-decoration: none;
+        padding: 12px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        margin: 16px 0;
+      }
+
+      .cta-button:hover {
+        background-color: #3e006e;
+      }
+
+      .preparation-tips {
+        background-color: #f2fbf4;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 20px 0;
+        border-left: 4px solid #1e8e3e;
+      }
+
+      .preparation-tips h3 {
+        color: #1e8e3e;
+        font-size: 16px;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .preparation-tips ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .preparation-tips li {
+        padding: 5px 0;
+        color: #333;
+        position: relative;
+        padding-left: 18px;
+      }
+
+      .preparation-tips li:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 11px;
+        width: 6px;
+        height: 6px;
+        background-color: #1e8e3e;
+        border-radius: 50%;
+      }
+
+      .footer {
+        background-color: #fafbfc;
+        padding: 24px 28px;
+        text-align: center;
+        border-top: 1px solid #eceef2;
+      }
+
+      .footer p {
+        color: #566074;
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+
+      .highlight {
+        color: #4b0082;
+        font-weight: 700;
+      }
+
+      .countdown {
+        background-color: #f7f8fc;
+        border-radius: 8px;
+        padding: 16px;
+        text-align: center;
+        color: #1f1f1f;
+        margin: 16px 0;
+        border-left: 4px solid #4b0082;
+      }
+
+      .countdown h3 {
+        color: #1f1f1f;
+        font-size: 16px;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .countdown p {
+        font-size: 14px;
+        margin: 0;
+        opacity: 0.9;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          margin: 10px;
+          border-radius: 8px;
+        }
+
+        .header,
+        .content,
+        .footer {
+          padding: 20px;
+        }
+
+        .header h1 {
+          font-size: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Event Reminder</h1>
+        <p>Upcoming tech event reminder</p>
+      </div>
+
+      <div class="content">
+        <div class="reminder-message">
+          <h2>
+            Hello
+            <span class="highlight"><%= firstName %> <%= lastName %></span>
+          </h2>
+          <p>
+            This is a friendly reminder about an upcoming event you registered
+            for. We're excited to see you there!
+          </p>
+        </div>
+
+        <div class="event-highlight">
+          <h3><span class="highlight"><%= eventTitle %></span></h3>
+          <p>
+            This event is happening <strong><%= timeUntilEvent %></strong> from
+            now!
+          </p>
+        </div>
+
+        <div class="countdown">
+          <h3>Event Countdown</h3>
+          <p><%= eventDate %> at <%= startTime %></p>
+        </div>
+
+        <div class="event-details">
+          <h3>Event Details</h3>
+          <div class="event-info">
+            <div class="event-info-item">
+              <strong>Event Title:</strong>
+              <span><%= eventTitle %></span>
+            </div>
+            <div class="event-info-item">
+              <strong>Date:</strong>
+              <span><%= eventDate %></span>
+            </div>
+            <div class="event-info-item">
+              <strong>Time:</strong>
+              <span><%= startTime %> - <%= endTime %></span>
+            </div>
+            <div class="event-info-item">
+              <strong>Location:</strong>
+              <span><%= location %></span>
+            </div>
+            <div class="event-info-item">
+              <strong>Category:</strong>
+              <span><%= category %></span>
+            </div>
+            <div class="event-info-item">
+              <strong>Organizer:</strong>
+              <span><%= organizer %></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="event-description">
+          <h4>About This Event</h4>
+          <p><%= description %></p>
+        </div>
+
+        <div class="preparation-tips">
+          <h3>🎯 Preparation Tips</h3>
+          <ul>
+            <li>Save the event details to your calendar</li>
+            <li>Check the event location and plan your route</li>
+            <li>Prepare any questions you want to ask</li>
+            <li>Bring business cards for networking</li>
+            <li>Charge your devices and bring a notebook</li>
+            <li>Follow the event hashtag on social media</li>
+          </ul>
+        </div>
+
+        <div style="text-align: center">
+          <a href="<%= eventUrl %>" class="cta-button">View Event Details</a>
+        </div>
+
+        <p
+          style="
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+            margin-top: 20px;
+          "
+        >
+          Can't make it? Please update your RSVP status so we can offer your
+          spot to someone else.
+        </p>
+      </div>
+
+      <div class="footer">
+        <p><strong><%= companyName %></strong></p>
+        <p>Connecting Africa's Tech Community</p>
+        <p>📍 <a href="<%= websiteUrl %>"><%= websiteUrl %></a></p>
+        <p>📧 <a href="mailto:<%= companyEmail %>"><%= companyEmail %></a></p>
+
+        <p style="margin-top: 20px; font-size: 12px; color: #adb5bd">
+          © <%= currentYear %> <%= companyName %>. All rights reserved.<br />
+          This email was sent to <%= email %>. If you have any questions, please
+          contact us at <%= supportEmail %>.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

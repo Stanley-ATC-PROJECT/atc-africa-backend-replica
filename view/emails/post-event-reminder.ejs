@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Post-Event Update Reminder - ATC Africa</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #1f1f1f;
+        background-color: #f6f7f9;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #e6e7eb;
+      }
+
+      .header {
+        background-color: #4b0082;
+        padding: 32px 28px;
+        text-align: center;
+        color: #ffffff;
+        border-bottom: 1px solid #3e006e;
+      }
+
+      .header h1 {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+
+      .header p {
+        font-size: 14px;
+        opacity: 0.9;
+        font-weight: 400;
+      }
+
+      .content {
+        padding: 28px;
+      }
+
+      .reminder-message {
+        margin-bottom: 30px;
+      }
+
+      .reminder-message h2 {
+        color: #1f1f1f;
+        font-size: 18px;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+
+      .reminder-message p {
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 12px;
+      }
+
+      .event-highlight {
+        background-color: #fff8e5;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 20px 0;
+        border-left: 4px solid #b68b00;
+        text-align: center;
+      }
+
+      .event-highlight h3 {
+        color: #6a4e00;
+        font-size: 16px;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .event-highlight p {
+        color: #856404;
+        font-size: 16px;
+        margin: 0;
+        font-weight: 500;
+      }
+
+      .completion-status {
+        background-color: #f7f8fc;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        border-left: 4px solid #4b0082;
+      }
+
+      .completion-status h3 {
+        color: #1f1f1f;
+        font-size: 16px;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .progress-bar {
+        background-color: #e9ecef;
+        border-radius: 10px;
+        height: 20px;
+        margin: 15px 0;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        background-color: #1e8e3e;
+        height: 100%;
+        border-radius: 10px;
+        transition: width 0.3s ease;
+      }
+
+      .progress-text {
+        text-align: center;
+        font-weight: 600;
+        color: #1f1f1f;
+        margin-top: 10px;
+        font-size: 13px;
+      }
+
+      .missing-items {
+        background-color: #fdecee;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 20px 0;
+        border-left: 4px solid #c51f2f;
+      }
+
+      .missing-items h3 {
+        color: #8e1220;
+        font-size: 16px;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .missing-items ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .missing-items li {
+        padding: 5px 0;
+        color: #721c24;
+        position: relative;
+        padding-left: 25px;
+      }
+
+      .missing-items li:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 11px;
+        width: 6px;
+        height: 6px;
+        background-color: #c51f2f;
+        border-radius: 50%;
+      }
+
+      .cta-button {
+        display: inline-block;
+        background-color: #4b0082;
+        color: #ffffff !important;
+        text-decoration: none;
+        padding: 12px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        margin: 16px 0;
+      }
+
+      .cta-button:hover {
+        background-color: #3e006e;
+      }
+
+      .requirements {
+        background-color: #f2fbf4;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 20px 0;
+        border-left: 4px solid #1e8e3e;
+      }
+
+      .requirements h3 {
+        color: #1e8e3e;
+        font-size: 16px;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .requirements ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .requirements li {
+        padding: 5px 0;
+        color: #155724;
+        position: relative;
+        padding-left: 25px;
+      }
+
+      .requirements li:before {
+        content: '📝';
+        position: absolute;
+        left: 0;
+        font-size: 16px;
+      }
+
+      .footer {
+        background-color: #fafbfc;
+        padding: 24px 28px;
+        text-align: center;
+        border-top: 1px solid #eceef2;
+      }
+
+      .footer p {
+        color: #566074;
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+
+      .highlight {
+        color: #4b0082;
+        font-weight: 700;
+      }
+
+      .urgency-banner {
+        background-color: #fdecee;
+        border-radius: 8px;
+        padding: 16px;
+        text-align: center;
+        color: #8e1220;
+        margin: 16px 0;
+        border-left: 4px solid #c51f2f;
+      }
+
+      .urgency-banner h3 {
+        color: #8e1220;
+        font-size: 16px;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .urgency-banner p {
+        font-size: 14px;
+        margin: 0;
+        opacity: 0.9;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          margin: 10px;
+          border-radius: 8px;
+        }
+
+        .header,
+        .content,
+        .footer {
+          padding: 20px;
+        }
+
+        .header h1 {
+          font-size: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Post-Event Update Reminder</h1>
+        <p>Help us showcase your event's impact</p>
+      </div>
+
+      <div class="content">
+        <div class="reminder-message">
+          <h2>
+            Hello <span class="highlight"><%= organizerFirstName %> <%= organizerLastName %></span>
+          </h2>
+          <p>
+            Thank you for organizing "<%= eventTitle %>" on <%= eventDate %>.
+            We hope it was a great success.
+          </p>
+          <p>
+            To help us showcase the impact of your event and inspire our community, 
+            we'd love for you to share some post-event highlights and information.
+          </p>
+        </div>
+
+        <div class="event-highlight">
+          <h3>Event: <span class="highlight"><%= eventTitle %></span></h3>
+          <p>
+            This event took place <strong><%= daysSinceEvent %> days ago</strong>
+          </p>
+        </div>
+
+        <div class="completion-status">
+          <h3>Post-Event Information Status</h3>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: <%- completionPercentage %>%"></div>
+          </div>
+          <div class="progress-text">
+            <%= completionPercentage %>% Complete (<%= completedItems %>/<%= totalItems %> items)
+          </div>
+        </div>
+
+        <% if (completionPercentage < 80) { %>
+        <div class="urgency-banner">
+          <h3>Action Required</h3>
+          <p>
+            You still need to complete <%= 80 - completionPercentage %>% more to reach our 80% completion target.
+          </p>
+        </div>
+
+        <div class="missing-items">
+          <h3>Still Missing</h3>
+          <ul>
+            <% missingItems.forEach(function(item) { %>
+            <li><%= item %></li>
+            <% }); %>
+          </ul>
+        </div>
+        <% } %>
+
+        <div class="requirements">
+          <h3>What We Need</h3>
+          <ul>
+            <li><strong>Event Highlights:</strong> Photos, videos, or key moments from your event</li>
+            <li><strong>Attendance Data:</strong> How many people attended your event</li>
+            <li><strong>Ticket Sales Info:</strong> Number of tickets sold (if applicable)</li>
+            <li><strong>Social Media Mentions:</strong> Posts and mentions about your event</li>
+          </ul>
+        </div>
+
+        <div style="text-align: center">
+          <a href="<%= updateUrl %>" class="cta-button">Update Event Information</a>
+        </div>
+
+        <p
+          style="
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+            margin-top: 20px;
+          "
+        >
+          Completing this information helps us:
+          <br />
+          • Showcase the success of our community events
+          <br />
+          • Provide valuable insights to future organizers
+          <br />
+          • Celebrate your achievements with the community
+        </p>
+
+        <% if (isLastReminder) { %>
+        <div class="urgency-banner">
+          <h3>🚨 Final Reminder</h3>
+          <p>
+            This is our final reminder. Please update your event information as soon as possible.
+          </p>
+        </div>
+        <% } %>
+      </div>
+
+      <div class="footer">
+        <p><strong><%= companyName %></strong></p>
+        <p>Empowering Africa's Tech Community</p>
+        <p>📍 <a href="<%= websiteUrl %>"><%= websiteUrl %></a></p>
+        <p>📧 <a href="mailto:<%= companyEmail %>"><%= companyEmail %></a></p>
+
+        <p style="margin-top: 20px; font-size: 12px; color: #adb5bd">
+          © <%= currentYear %> <%= companyName %>. All rights reserved.<br />
+          This email was sent to <%= organizerEmail %>. If you have any questions, please
+          contact us at <%= supportEmail %>.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
