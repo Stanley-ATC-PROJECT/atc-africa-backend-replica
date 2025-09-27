@@ -1,0 +1,164 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  NODE_VERSION: '18'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  test:
+    name: Test & Lint
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+
+    - name: Install dependencies
+      run: pnpm install
+
+    - name: Setup test environment
+      run: |
+        cp .env-example .env
+        echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/test_db" >> .env
+        echo "DIRECT_URL=postgresql://postgres:postgres@localhost:5432/test_db" >> .env
+        echo "REDIS_URL=redis://localhost:6379" >> .env
+        echo "JWT_SECRET=test-jwt-secret" >> .env
+        echo "ADMIN_TOKEN=test-admin-token" >> .env
+        echo "REDIS_TTL=3600" >> .env
+        echo "CACHE_MAX=100" >> .env
+        echo "CACHE_TTL=300" >> .env
+        echo "STORAGE_PROVIDER=s3" >> .env
+        echo "MAX_FILE_SIZE=10485760" >> .env
+        echo "AWS_REGION=us-east-1" >> .env
+        echo "AWS_ENDPOINT=test-endpoint" >> .env
+        echo "S3_PUBLIC_BUCKET_NAME=test-bucket" >> .env
+        echo "S3_PRIVATE_BUCKET_NAME=test-private-bucket" >> .env
+        echo "AWS_ACCESS_KEY_ID=test-access-key" >> .env
+        echo "AWS_SECRET_ACCESS_KEY=test-secret-key" >> .env
+        echo "FRONTEND_URL=http://localhost:3000" >> .env
+        echo "COMPANY_NAME=ATC Africa" >> .env
+        echo "COMPANY_EMAIL=test@atcafrica.live" >> .env
+        echo "BREVO_API_KEY=test-brevo-key" >> .env
+        echo "BREVO_SENDER_EMAIL=test@atcafrica.live" >> .env
+
+    - name: Generate Prisma client
+      run: pnpm db:generate
+
+    - name: Run database migrations
+      run: pnpm db:migrate
+
+    - name: Run linting
+      run: pnpm lint
+
+    - name: Run unit tests
+      run: pnpm test
+
+    - name: Run e2e tests
+      run: pnpm test:e2e
+
+    - name: Build application
+      run: pnpm build
+
+  build-and-push:
+    name: Build & Push Docker Image
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix={{branch}}-
+          type=raw,value=v1,enable={{is_default_branch}}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  deploy-dev:
+    name: Deploy to Dev Environment
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Deploy to Dev EC2
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.DEV_EC2_HOST }}
+        username: ${{ secrets.DEV_EC2_USER }}
+        key: ${{ secrets.DEV_EC2_SSH_KEY }}
+        script: |
+          cd /home/ubuntu/atc-africa-backend-replica
+          git pull origin main
+          pnpm install
+          pnpm build
+          pm2 restart atc-africa-api-dev || pm2 start dist/main.js --name atc-africa-api-dev
+          pm2 save
