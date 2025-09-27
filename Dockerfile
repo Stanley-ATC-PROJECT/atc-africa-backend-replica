@@ -1,16 +1,18 @@
-# Build stage
-FROM node:18-alpine AS builder
+# Single stage build
+FROM node:18-alpine
 
 WORKDIR /app
-
-# Copy package files
-COPY package*.json pnpm-lock.yaml ./
 
 # Install pnpm
 RUN npm install -g pnpm
 
-# Install dependencies
+# Copy package files
+COPY package*.json pnpm-lock.yaml ./
+
+# Copy source code
 COPY . .
+
+# Install dependencies
 RUN pnpm install
 
 # Generate Prisma client
@@ -18,28 +20,6 @@ RUN pnpm db:generate
 
 # Build application
 RUN pnpm build
-
-# Production stage
-FROM node:18-alpine AS production
-
-WORKDIR /app
-
-# Install pnpm
-RUN npm install -g pnpm
-
-# Copy package files
-COPY package*.json pnpm-lock.yaml ./
-
-# Install production dependencies only
-RUN pnpm install --prod
-
-# Copy built application
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/view ./view
-
-# Generate Prisma client for production
-RUN pnpm db:generate
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs
