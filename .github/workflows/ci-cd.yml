@@ -157,5 +157,5 @@ jobs:
           git pull origin main
           pnpm install
           pnpm build
-          pm2 restart atc-africa-api-dev || pm2 start dist/main.js --name atc-africa-api-dev
+          pm2 restart atc-africa-api-dev || pm2 start dist/src/main.js --name atc-africa-api-dev
           pm2 save
