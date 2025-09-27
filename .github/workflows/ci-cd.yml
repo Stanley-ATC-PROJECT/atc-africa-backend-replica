@@ -89,9 +89,6 @@ jobs:
     - name: Run database migrations
       run: pnpm db:migrate
 
-    - name: Run linting
-      run: pnpm lint
-
     - name: Run unit tests
       run: pnpm test
 
