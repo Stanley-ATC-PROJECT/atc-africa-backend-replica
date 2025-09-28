@@ -32,6 +32,12 @@ jobs:
     - name: Install dependencies
       run: pnpm install
 
+    - name: Generate Prisma client
+      run: pnpm db:generate
+
+    - name: Generate Prisma client
+      run: pnpm db:generate
+
     - name: Build application
       run: pnpm build
 
